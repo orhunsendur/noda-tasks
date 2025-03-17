@@ -27,18 +27,37 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
-          # Disabling cache since we don't have a lock file
+          node-version: 18 # Upgraded to Node.js 18 which is better for Next.js 14
       
       - name: Install dependencies
-        # Using npm install instead of npm ci since we don't have a lock file
-        run: npm install
+        run: |
+          echo "Current working directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+          echo "Installing dependencies..."
+          npm install
+        
+      - name: Debug info
+        run: |
+          echo "Package.json contents:"
+          cat package.json
+          echo "Next.config.js contents:"
+          cat next.config.js
       
       - name: Build
-        run: npm run build
+        run: |
+          echo "Running build..."
+          npm run build
+          echo "Build output:"
+          ls -la out || echo "out directory not found"
         
       - name: Create .nojekyll file
-        run: touch ./out/.nojekyll
+        run: |
+          echo "Creating .nojekyll file..."
+          touch ./out/.nojekyll
+          echo "Checking out directory structure:"
+          ls -la ./out
       
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
